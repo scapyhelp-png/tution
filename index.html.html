@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EduSphere 3D – Future of Learning</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background: #050510;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+    }
+    canvas {
+      display: block;
+      touch-action: none;
+    }
+
+    /* ===== NAVBAR ===== */
+    #navbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: linear-gradient(180deg, rgba(5,5,20,0.9) 0%, rgba(5,5,20,0) 100%);
+      z-index: 30;
+      pointer-events: none;
+    }
+    #navbar > * { pointer-events: auto; }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+      cursor: default;
+    }
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #7c3aed, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.6); }
+      50% { box-shadow: 0 0 35px rgba(6, 182, 212, 0.8); }
+    }
+    .logo span {
+      background: linear-gradient(90deg, #a78bfa, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links {
+      display: flex;
+      gap: 6px;
+    }
+    .nav-link {
+      background: rgba(20, 20, 40, 0.6);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      color: rgba(220, 220, 255, 0.85);
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: rgba(124, 58, 237, 0.35);
+      border-color: #7c3aed;
+      color: white;
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+    }
+    .nav-link i { font-size: 0.85rem; }
+
+    /* ===== HERO TEXT ===== */
+    #hero {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: white;
+      z-index: 10;
+      pointer-events: none;
+      width: 90%;
+      max-width: 800px;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    #hero.hidden {
+      opacity: 0;
+      transform: translate(-50%, -60%);
+      pointer-events: none;
+    }
+    #hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 4rem);
+      font-weight: 900;
+      margin: 0 0 15px 0;
+      line-height: 1.1;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #ffffff 0%, #a78bfa 50%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 60px rgba(124, 58, 237, 0.3);
+      filter: drop-shadow(0 0 30px rgba(124, 58, 237, 0.4));
+    }
+    #hero p {
+      font-size: clamp(0.8rem, 1.6vw, 1.05rem);
+      color: rgba(200, 210, 255, 0.8);
+      margin: 0 auto 25px auto;
+      max-width: 550px;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      pointer-events: auto;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #06b6d4);
+      color: white;
+      border: none;
+      padding: 13px 30px;
+      border-radius: 40px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(124, 58, 237, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(6, 182, 212, 0.6);
+    }
+    .btn-secondary {
+      background: rgba(20, 20, 40, 0.6);
+      color: white;
+      border: 1px solid rgba(124, 58, 237, 0.5);
+      padding: 13px 30px;
+      border-radius: 40px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      background: rgba(124, 58, 237, 0.25);
+      border-color: #22d3ee;
+    }
+
+    /* ===== HINT ===== */
+    #hint {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(180, 190, 255, 0.45);
+      font-size: 0.72rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(5, 5, 20, 0.6);
+      padding: 6px 16px;
+      border-radius: 20px;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+
+    /* ===== SIDE INFO PANELS ===== */
+    .info-panel {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%) translateX(120%);
+      width: 320px;
+      max-height: 70vh;
+      max-height: 70dvh;
+      overflow-y: auto;
+      background: rgba(10, 10, 30, 0.88);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 22px;
+      padding: 24px;
+      color: white;
+      z-index: 25;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
+      opacity: 0;
+      pointer-events: none;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+    }
+    .info-panel.open {
+      transform: translateY(-50%) translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .info-panel.right { right: 24px; }
+    .info-panel.left { left: 24px; }
+    .panel-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(124, 58, 237, 0.15);
+      border: none;
+      color: rgba(255,255,255,0.7);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+    .panel-close:hover {
+      background: rgba(124, 58, 237, 0.4);
+      color: white;
+    }
+    .info-panel h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 18px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #a78bfa;
+      letter-spacing: 1px;
+      padding-right: 25px;
+    }
+    .info-panel h2 i { color: #22d3ee; }
+
+    /* Courses list */
+    .course-item {
+      background: rgba(124, 58, 237, 0.08);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+    .course-item:hover {
+      background: rgba(124, 58, 237, 0.2);
+      border-color: #7c3aed;
+      transform: translateX(4px);
+    }
+    .course-item .course-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .course-item .course-desc {
+      font-size: 0.72rem;
+      color: rgba(200, 210, 255, 0.65);
+      line-height: 1.4;
+    }
+    .course-price {
+      color: #22d3ee;
+      font-weight: 700;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+    .course-tag {
+      display: inline-block;
+      font-size: 0.6rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(34, 211, 238, 0.15);
+      color: #22d3ee;
+      margin-top: 6px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Tutors */
+    .tutor-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(124, 58, 237, 0.12);
+    }
+    .tutor-item:last-child { border-bottom: none; }
+    .tutor-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #7c3aed, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+      color: white;
+    }
+    .tutor-info .tutor-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .tutor-info .tutor-subject {
+      font-size: 0.7rem;
+      color: rgba(200, 210, 255, 0.6);
+      margin-top: 2px;
+    }
+    .tutor-info .tutor-rating {
+      font-size: 0.7rem;
+      color: #fbbf24;
+      margin-top: 2px;
+    }
+
+    /* Booking form */
+    .booking-field {
+      margin-bottom: 13px;
+    }
+    .booking-field label {
+      display: block;
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+    .booking-field input,
+    .booking-field select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      background: rgba(0, 0, 10, 0.6);
+      color: white;
+      font-size: 0.82rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .booking-field select {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 14px;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .booking-field select option {
+      background: #0a0a1e;
+    }
+    .booking-field input:focus,
+    .booking-field select:focus {
+      border-color: #22d3ee;
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #7c3aed, #06b6d4);
+      color: white;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 5px;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(124, 58, 237, 0.5);
+    }
+    .form-message {
+      margin-top: 12px;
+      font-size: 0.75rem;
+      text-align: center;
+      color: #22d3ee;
+      min-height: 18px;
+      line-height: 1.4;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .form-message.show { opacity: 1; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 820px) {
+      #navbar { padding: 10px 14px; }
+      .logo { font-size: 1rem; gap: 7px; }
+      .logo-icon { width: 32px; height: 32px; font-size: 0.95rem; border-radius: 10px; }
+      .nav-link { padding: 6px 11px; font-size: 0.68rem; }
+      .nav-link span { display: none; }
+      .nav-link i { font-size: 0.9rem; }
+      .info-panel {
+        top: 50%;
+        left: 50%;
+        right: auto;
+        transform: translate(-50%, -50%) scale(0.92);
+        width: calc(100% - 32px);
+        max-width: 360px;
+        max-height: 78vh;
+        max-height: 78dvh;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .info-panel.right, .info-panel.left { right: auto; left: auto; }
+      .info-panel.open {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #hero { top: 45%; }
+      #hero h1 { letter-spacing: 1px; }
+      #hint { font-size: 0.65rem; bottom: 12px; }
+      .hero-buttons { gap: 10px; }
+      .btn-primary, .btn-secondary { padding: 11px 22px; font-size: 0.82rem; }
+    }
+    @media (max-width: 480px) {
+      .logo span { font-size: 0.85rem; }
+      #hero h1 { font-size: 1.5rem; }
+      #hero p { font-size: 0.75rem; }
+      .nav-link { padding: 5px 9px; }
+    }
+    @media (max-height: 500px) and (orientation: landscape) {
+      #hero { top: 42%; }
+      #hero h1 { font-size: 1.4rem; }
+      #hero p { display: none; }
+      #hint { display: none; }
+    }
+
+    /* Custom scrollbar */
+    .info-panel::-webkit-scrollbar { width: 4px; }
+    .info-panel::-webkit-scrollbar-track { background: transparent; }
+    .info-panel::-webkit-scrollbar-thumb { background: rgba(124, 58, 237, 0.4); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div id="navbar">
+    <div class="logo">
+      <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+      <span>EduSphere</span>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link" id="navCourses"><i class="fas fa-book-open"></i><span>Courses</span></button>
+      <button class="nav-link" id="navTutors"><i class="fas fa-chalkboard-teacher"></i><span>Tutors</span></button>
+      <button class="nav-link" id="navBook"><i class="fas fa-calendar-plus"></i><span>Book</span></button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div id="hero">
+    <h1>LEARN BEYOND<br>THE ORBIT</h1>
+    <p>Step into the future of education. Interactive 3D classrooms, expert tutors, and a universe of knowledge — all in one immersive platform.</p>
+    <div class="hero-buttons">
+      <button class="btn-primary" id="heroExplore"><i class="fas fa-rocket"></i> Explore Courses</button>
+      <button class="btn-secondary" id="heroBook"><i class="fas fa-calendar-check"></i> Free Trial Class</button>
+    </div>
+  </div>
+
+  <!-- HINT -->
+  <div id="hint">
+    <i class="fas fa-hand-pointer"></i> Drag the planets &nbsp;•&nbsp; Click to explore
+  </div>
+
+  <!-- COURSES PANEL -->
+  <div class="info-panel right" id="coursesPanel">
+    <button class="panel-close" data-close="coursesPanel"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-book-open"></i> Our Courses</h2>
+    <div id="coursesList"></div>
+  </div>
+
+  <!-- TUTORS PANEL -->
+  <div class="info-panel left" id="tutorsPanel">
+    <button class="panel-close" data-close="tutorsPanel"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-chalkboard-teacher"></i> Expert Tutors</h2>
+    <div id="tutorsList"></div>
+  </div>
+
+  <!-- BOOKING PANEL -->
+  <div class="info-panel right" id="bookPanel">
+    <button class="panel-close" data-close="bookPanel"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-calendar-plus"></i> Book a Class</h2>
+    <form id="bookingForm">
+      <div class="booking-field">
+        <label for="studentName">Student Name</label>
+        <input type="text" id="studentName" placeholder="Your full name" required>
+      </div>
+      <div class="booking-field">
+        <label for="studentEmail">Email</label>
+        <input type="email" id="studentEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="booking-field">
+        <label for="courseSelect">Course</label>
+        <select id="courseSelect" required>
+          <option value="">Choose a course</option>
+          <option value="math">Mathematics Mastery</option>
+          <option value="physics">Physics Fundamentals</option>
+          <option value="chemistry">Chemistry Lab</option>
+          <option value="biology">Biology & Life Sciences</option>
+          <option value="english">English Literature</option>
+          <option value="coding">Coding & AI Basics</option>
+          <option value="sat">SAT Preparation</option>
+        </select>
+      </div>
+      <div class="booking-field">
+        <label for="classDate">Preferred Date</label>
+        <input type="date" id="classDate" required>
+      </div>
+      <div class="booking-field">
+        <label for="classTime">Preferred Time</label>
+        <input type="time" id="classTime" required>
+      </div>
+      <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Book Free Trial</button>
+      <div class="form-message" id="formMessage"></div>
+    </form>
+  </div>
+
+  <!-- Three.js -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // ===== SCENE SETUP =====
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050510);
+    scene.fog = new THREE.FogExp2(0x050510, 0.008);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 300);
+    camera.position.set(0, 6, 22);
+    camera.lookAt(0, 2, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.9;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    document.body.appendChild(renderer.domElement);
+
+    // ===== CONTROLS =====
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.4;
+    controls.target.set(0, 2.5, 0);
+    controls.minDistance = 10;
+    controls.maxDistance = 45;
+    controls.maxPolarAngle = Math.PI / 2.1;
+    controls.enablePan = false;
+    controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+
+    // ===== LIGHTING =====
+    const ambient = new THREE.AmbientLight(0x303055, 0.8);
+    scene.add(ambient);
+
+    const keyLight = new THREE.DirectionalLight(0xaaccff, 1.2);
+    keyLight.position.set(10, 20, 10);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 2048;
+    keyLight.shadow.mapSize.height = 2048;
+    keyLight.shadow.camera.left = -25;
+    keyLight.shadow.camera.right = 25;
+    keyLight.shadow.camera.top = 25;
+    keyLight.shadow.camera.bottom = -25;
+    keyLight.shadow.camera.near = 1;
+    keyLight.shadow.camera.far = 60;
+    keyLight.shadow.bias = -0.0005;
+    scene.add(keyLight);
+
+    const purpleLight = new THREE.PointLight(0x7c3aed, 2.5, 40);
+    purpleLight.position.set(-10, 6, -5);
+    scene.add(purpleLight);
+
+    const cyanLight = new THREE.PointLight(0x06b6d4, 2.5, 40);
+    cyanLight.position.set(10, 6, 8);
+    scene.add(cyanLight);
+
+    const centerGlow = new THREE.PointLight(0xffffff, 1.5, 25);
+    centerGlow.position.set(0, 4, 0);
+    scene.add(centerGlow);
+
+    // ===== GROUND =====
+    const groundGeo = new THREE.CircleGeometry(60, 64);
+    const groundMat = new THREE.MeshStandardMaterial({ 
+      color: 0x080818, 
+      roughness: 0.9, 
+      metalness: 0.3,
+      emissive: new THREE.Color(0x050510),
+      emissiveIntensity: 0.5
+    });
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.5;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    // Glowing grid
+    const grid = new THREE.GridHelper(100, 50, 0x7c3aed, 0x1a1a3e);
+    grid.material.opacity = 0.25;
+    grid.material.transparent = true;
+    grid.position.y = -0.4;
+    scene.add(grid);
+
+    // ===== CENTRAL HOLOGRAM SPHERE (Knowledge Core) =====
+    const coreGroup = new THREE.Group();
+    coreGroup.position.y = 4.5;
+
+    // Inner glowing sphere
+    const coreInnerGeo = new THREE.SphereGeometry(1.2, 32, 32);
+    const coreInnerMat = new THREE.MeshStandardMaterial({ 
+      color: 0x7c3aed, 
+      emissive: new THREE.Color(0x7c3aed),
+      emissiveIntensity: 2.0,
+      roughness: 0.2,
+      metalness: 0.5
+    });
+    const coreInner = new THREE.Mesh(coreInnerGeo, coreInnerMat);
+    coreGroup.add(coreInner);
+
+    // Wireframe shell
+    const coreShellGeo = new THREE.IcosahedronGeometry(1.8, 1);
+    const coreShellMat = new THREE.MeshBasicMaterial({ 
+      color: 0x22d3ee, 
+      wireframe: true, 
+      transparent: true, 
+      opacity: 0.4 
+    });
+    const coreShell = new THREE.Mesh(coreShellGeo, coreShellMat);
+    coreGroup.add(coreShell);
+
+    // Outer rotating rings
+    const ring1Geo = new THREE.TorusGeometry(2.6, 0.03, 8, 80);
+    const ring1Mat = new THREE.MeshBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.7 });
+    const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+    ring1.rotation.x = Math.PI / 2.5;
+    coreGroup.add(ring1);
+
+    const ring2Geo = new THREE.TorusGeometry(3.1, 0.025, 8, 80);
+    const ring2Mat = new THREE.MeshBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.6 });
+    const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+    ring2.rotation.x = -Math.PI / 3;
+    ring2.rotation.z = 0.8;
+    coreGroup.add(ring2);
+
+    const ring3Geo = new THREE.TorusGeometry(3.6, 0.02, 8, 80);
+    const ring3Mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3 });
+    const ring3 = new THREE.Mesh(ring3Geo, ring3Mat);
+    ring3.rotation.x = Math.PI / 4;
+    ring3.rotation.z = -0.6;
+    coreGroup.add(ring3);
+
+    // Light halo
+    const haloGeo = new THREE.SphereGeometry(2.2, 32, 32);
+    const haloMat = new THREE.MeshBasicMaterial({ 
+      color: 0x7c3aed, 
+      transparent: true, 
+      opacity: 0.08,
+      side: THREE.BackSide
+    });
+    const halo = new THREE.Mesh(haloGeo, haloMat);
+    coreGroup.add(halo);
+
+    scene.add(coreGroup);
+
+    // ===== ORBITING PLANETS (Subjects) =====
+    const planets = [];
+    const planetData = [
+      { name: 'Mathematics', color: 0x7c3aed, radius: 0.55, orbitRadius: 6.5, speed: 0.5, angle: 0, icon: '📐' },
+      { name: 'Physics', color: 0x06b6d4, radius: 0.65, orbitRadius: 8.0, speed: 0.35, angle: Math.PI * 0.6, icon: '⚛️' },
+      { name: 'Chemistry', color: 0xf59e0b, radius: 0.5, orbitRadius: 9.5, speed: 0.28, angle: Math.PI * 1.2, icon: '🧪' },
+      { name: 'Biology', color: 0x10b981, radius: 0.6, orbitRadius: 11.0, speed: 0.22, angle: Math.PI * 1.8, icon: '🧬' },
+      { name: 'Literature', color: 0xec4899, radius: 0.5, orbitRadius: 7.2, speed: 0.42, angle: Math.PI * 0.3, icon: '📖' },
+      { name: 'Coding', color: 0x3b82f6, radius: 0.55, orbitRadius: 10.2, speed: 0.32, angle: Math.PI * 1.5, icon: '💻' },
+    ];
+
+    // Create orbit rings (faint)
+    planetData.forEach((p, i) => {
+      const orbitRingGeo = new THREE.TorusGeometry(p.orbitRadius, 0.015, 4, 120);
+      const orbitRingMat = new THREE.MeshBasicMaterial({ 
+        color: p.color, 
+        transparent: true, 
+        opacity: 0.12 
+      });
+      const orbitRing = new THREE.Mesh(orbitRingGeo, orbitRingMat);
+      orbitRing.rotation.x = Math.PI / 2;
+      orbitRing.position.y = 0;
+      scene.add(orbitRing);
+    });
+
+    // Create planets
+    planetData.forEach((p, i) => {
+      const planetGroup = new THREE.Group();
+      
+      // Planet sphere
+      const sphereGeo = new THREE.SphereGeometry(p.radius, 32, 32);
+      const sphereMat = new THREE.MeshStandardMaterial({ 
+        color: p.color,
+        emissive: new THREE.Color(p.color),
+        emissiveIntensity: 0.6,
+        roughness: 0.3,
+        metalness: 0.6
+      });
+      const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+      sphere.castShadow = true;
+      sphere.receiveShadow = true;
+      planetGroup.add(sphere);
+
+      // Glow ring around planet
+      const glowRingGeo = new THREE.TorusGeometry(p.radius * 1.5, 0.04, 8, 40);
+      const glowRingMat = new THREE.MeshBasicMaterial({ 
+        color: p.color, 
+        transparent: true, 
+        opacity: 0.5 
+      });
+      const glowRing = new THREE.Mesh(glowRingGeo, glowRingMat);
+      glowRing.rotation.x = Math.PI / 2 + 0.3;
+      planetGroup.add(glowRing);
+
+      // Small satellite
+      const moonGeo = new THREE.SphereGeometry(p.radius * 0.2, 8, 8);
+      const moonMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xaaaaaa, emissiveIntensity: 0.5 });
+      const moon = new THREE.Mesh(moonGeo, moonMat);
+      moon.position.set(p.radius * 1.8, 0, 0);
+      planetGroup.add(moon);
+
+      // Store animation data
+      planetGroup.userData = {
+        orbitRadius: p.orbitRadius,
+        speed: p.speed,
+        angle: p.angle,
+        moon,
+        sphere,
+        name: p.name,
+        color: p.color
+      };
+      
+      planets.push(planetGroup);
+      scene.add(planetGroup);
+    });
+
+    // ===== STARS =====
+    const starCount = 1500;
+    const starsGeo = new THREE.BufferGeometry();
+    const starsPos = new Float32Array(starCount * 3);
+    const starsColors = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount * 3; i += 3) {
+      starsPos[i] = (Math.random() - 0.5) * 200;
+      starsPos[i+1] = Math.random() * 80 - 10;
+      starsPos[i+2] = (Math.random() - 0.5) * 200;
+      
+      const c = Math.random();
+      if (c < 0.5) {
+        starsColors[i] = 0.7; starsColors[i+1] = 0.6; starsColors[i+2] = 1.0;
+      } else if (c < 0.8) {
+        starsColors[i] = 0.4; starsColors[i+1] = 0.8; starsColors[i+2] = 1.0;
+      } else {
+        starsColors[i] = 1.0; starsColors[i+1] = 1.0; starsColors[i+2] = 1.0;
+      }
+    }
+    starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+    starsGeo.setAttribute('color', new THREE.BufferAttribute(starsColors, 3));
+    const starsMat = new THREE.PointsMaterial({ 
+      size: 0.3, 
+      vertexColors: true, 
+      transparent: true, 
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending,
+      sizeAttenuation: true
+    });
+    const stars = new THREE.Points(starsGeo, starsMat);
+    scene.add(stars);
+
+    // Floating small particles
+    const dustCount = 300;
+    const dustGeo = new THREE.BufferGeometry();
+    const dustPos = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount * 3; i += 3) {
+      dustPos[i] = (Math.random() - 0.5) * 80;
+      dustPos[i+1] = Math.random() * 20;
+      dustPos[i+2] = (Math.random() - 0.5) * 80;
+    }
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+    const dustMat = new THREE.PointsMaterial({
+      color: 0xa78bfa,
+      size: 0.08,
+      transparent: true,
+      opacity: 0.4,
+      blending: THREE.AdditiveBlending
+    });
+    const dust = new THREE.Points(dustGeo, dustMat);
+    scene.add(dust);
+
+    // ===== FLOATING BOOKS / SHAPES =====
+    const shapesGroup = new THREE.Group();
+    const shapeColors = [0x7c3aed, 0x06b6d4, 0xf59e0b, 0x10b981, 0xec4899];
+    for (let i = 0; i < 12; i++) {
+      let geo;
+      const type = i % 3;
+      if (type === 0) geo = new THREE.BoxGeometry(0.4, 0.55, 0.12);
+      else if (type === 1) geo = new THREE.OctahedronGeometry(0.3);
+      else geo = new THREE.TetrahedronGeometry(0.35);
+      
+      const mat = new THREE.MeshStandardMaterial({
+        color: shapeColors[i % shapeColors.length],
+        emissive: new THREE.Color(shapeColors[i % shapeColors.length]),
+        emissiveIntensity: 0.5,
+        roughness: 0.4,
+        metalness: 0.6,
+        transparent: true,
+        opacity: 0.85
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(
+        (Math.random() - 0.5) * 18,
+        Math.random() * 10 + 2,
+        (Math.random() - 0.5) * 18
+      );
+      mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+      mesh.userData = {
+        rotSpeed: 0.005 + Math.random() * 0.01,
+        floatSpeed: 0.3 + Math.random() * 0.5,
+        floatOffset: Math.random() * Math.PI * 2,
+        baseY: mesh.position.y
+      };
+      shapesGroup.add(mesh);
+    }
+    scene.add(shapesGroup);
+
+    // ===== ANIMATION LOOP =====
+    const clock = new THREE.Clock();
+
+    function animate() {
+      const elapsed = clock.getElapsedTime();
+      const delta = clock.getDelta();
+
+      // Core rotation
+      coreGroup.rotation.y += 0.003;
+      coreShell.rotation.y -= 0.005;
+      coreShell.rotation.x += 0.002;
+      ring1.rotation.z += 0.008;
+      ring2.rotation.y += 0.006;
+      ring3.rotation.z -= 0.004;
+
+      // Core pulse
+      const pulse = 1 + Math.sin(elapsed * 2) * 0.08;
+      coreInner.scale.set(pulse, pulse, pulse);
+      halo.scale.set(pulse * 1.1, pulse * 1.1, pulse * 1.1);
+
+      // Planets orbit
+      planets.forEach((planet) => {
+        const data = planet.userData;
+        data.angle += data.speed * 0.005;
+        planet.position.x = Math.cos(data.angle) * data.orbitRadius;
+        planet.position.z = Math.sin(data.angle) * data.orbitRadius;
+        planet.position.y = Math.sin(data.angle * 2) * 0.6;
+        
+        // Planet self-rotation
+        data.sphere.rotation.y += 0.02;
+        
+        // Moon orbit
+        data.moon.position.x = Math.cos(elapsed * 2 + data.angle) * data.sphere.geometry.parameters.radius * 1.9;
+        data.moon.position.z = Math.sin(elapsed * 2 + data.angle) * data.sphere.geometry.parameters.radius * 1.9;
+      });
+
+      // Floating shapes
+      shapesGroup.children.forEach((shape) => {
+        shape.rotation.x += shape.userData.rotSpeed;
+        shape.rotation.y += shape.userData.rotSpeed * 0.7;
+        shape.position.y = shape.userData.baseY + Math.sin(elapsed * shape.userData.floatSpeed + shape.userData.floatOffset) * 0.6;
+      });
+
+      // Stars rotation
+      stars.rotation.y += 0.0001;
+      dust.rotation.y += 0.0002;
+
+      // Breathing lights
+      purpleLight.intensity = 2.0 + Math.sin(elapsed * 1.5) * 0.8;
+      cyanLight.intensity = 2.0 + Math.cos(elapsed * 1.8) * 0.8;
+
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // ===== RESPONSIVE =====
+    window.addEventListener('resize', () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      
+      // Adjust camera for mobile
+      if (w < 700) {
+        camera.position.set(0, 8, 28);
+        controls.target.set(0, 3, 0);
+      } else {
+        camera.position.set(0, 6, 22);
+        controls.target.set(0, 2.5, 0);
+      }
+    });
+    
+    // Initial responsive setup
+    if (window.innerWidth < 700) {
+      camera.position.set(0, 8, 28);
+      controls.target.set(0, 3, 0);
+    }
+
+    // ===== UI INTERACTIONS =====
+    const coursesPanel = document.getElementById('coursesPanel');
+    const tutorsPanel = document.getElementById('tutorsPanel');
+    const bookPanel = document.getElementById('bookPanel');
+    const hero = document.getElementById('hero');
+
+    function closeAllPanels() {
+      coursesPanel.classList.remove('open');
+      tutorsPanel.classList.remove('open');
+      bookPanel.classList.remove('open');
+      hero.classList.remove('hidden');
+    }
+
+    function openPanel(panel) {
+      closeAllPanels();
+      panel.classList.add('open');
+      hero.classList.add('hidden');
+    }
+
+    // Close buttons
+    document.querySelectorAll('.panel-close').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-close');
+        document.getElementById(id).classList.remove('open');
+        hero.classList.remove('hidden');
+      });
+    });
+
+    // Nav buttons
+    document.getElementById('navCourses').addEventListener('click', () => openPanel(coursesPanel));
+    document.getElementById('navTutors').addEventListener('click', () => openPanel(tutorsPanel));
+    document.getElementById('navBook').addEventListener('click', () => openPanel(bookPanel));
+
+    // Hero buttons
+    document.getElementById('heroExplore').addEventListener('click', () => openPanel(coursesPanel));
+    document.getElementById('heroBook').addEventListener('click', () => openPanel(bookPanel));
+
+    // ===== COURSES DATA =====
+    const courses = [
+      { name: 'Mathematics Mastery', desc: 'Algebra, Geometry, Calculus & beyond', price: '$49/mo', tag: 'POPULAR' },
+      { name: 'Physics Fundamentals', desc: 'Mechanics, Waves, Electricity & Magnetism', price: '$59/mo', tag: 'HOT' },
+      { name: 'Chemistry Lab', desc: 'Organic, Inorganic & Physical Chemistry', price: '$55/mo', tag: '' },
+      { name: 'Biology & Life Sciences', desc: 'Cell Biology, Genetics & Human Anatomy', price: '$49/mo', tag: '' },
+      { name: 'English Literature', desc: 'Analysis, Writing & Critical Thinking', price: '$39/mo', tag: '' },
+      { name: 'Coding & AI Basics', desc: 'Python, Web Dev & Intro to AI', price: '$69/mo', tag: 'NEW' },
+      { name: 'SAT Preparation', desc: 'Math, Reading & Writing — full prep', price: '$89/mo', tag: 'BEST VALUE' },
+    ];
+
+    const coursesList = document.getElementById('coursesList');
+    courses.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'course-item';
+      div.innerHTML = `
+        <div class="course-name">
+          <span>${c.name}</span>
+          <span class="course-price">${c.price}</span>
+        </div>
+        <div class="course-desc">${c.desc}</div>
+        ${c.tag ? `<span class="course-tag">${c.tag}</span>` : ''}
+      `;
+      div.addEventListener('click', () => {
+        // Pre-select course in booking
+        const select = document.getElementById('courseSelect');
+        const val = c.name.toLowerCase().includes('math') ? 'math' :
+                    c.name.toLowerCase().includes('physic') ? 'physics' :
+                    c.name.toLowerCase().includes('chem') ? 'chemistry' :
+                    c.name.toLowerCase().includes('bio') ? 'biology' :
+                    c.name.toLowerCase().includes('english') ? 'english' :
+                    c.name.toLowerCase().includes('coding') ? 'coding' : 'sat';
+        select.value = val;
+        openPanel(bookPanel);
+      });
+      coursesList.appendChild(div);
+    });
+
+    // ===== TUTORS DATA =====
+    const tutors = [
+      { name: 'Dr. Sarah Chen', subject: 'Mathematics', rating: 4.9, initials: 'SC', color: '#7c3aed' },
+      { name: 'Prof. James Miller', subject: 'Physics', rating: 4.8, initials: 'JM', color: '#06b6d4' },
+      { name: 'Dr. Aisha Patel', subject: 'Chemistry', rating: 5.0, initials: 'AP', color: '#f59e0b' },
+      { name: 'Mr. David Kim', subject: 'Coding & AI', rating: 4.9, initials: 'DK', color: '#10b981' },
+      { name: 'Ms. Elena Rossi', subject: 'English Literature', rating: 4.7, initials: 'ER', color: '#ec4899' },
+      { name: 'Dr. Michael Brown', subject: 'Biology', rating: 4.8, initials: 'MB', color: '#3b82f6' },
+    ];
+
+    const tutorsList = document.getElementById('tutorsList');
+    tutors.forEach(t => {
+      const div = document.createElement('div');
+      div.className = 'tutor-item';
+      div.innerHTML = `
+        <div class="tutor-avatar" style="background: linear-gradient(135deg, ${t.color}, ${t.color}88);">${t.initials}</div>
+        <div class="tutor-info">
+          <div class="tutor-name">${t.name}</div>
+          <div class="tutor-subject">${t.subject}</div>
+          <div class="tutor-rating">★ ${t.rating} / 5.0</div>
+        </div>
+      `;
+      tutorsList.appendChild(div);
+    });
+
+    // ===== BOOKING FORM =====
+    const bookingForm = document.getElementById('bookingForm');
+    const formMessage = document.getElementById('formMessage');
+    
+    // Set min date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('classDate').setAttribute('min', today);
+
+    bookingForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('studentName').value.trim();
+      const email = document.getElementById('studentEmail').value.trim();
+      const course = document.getElementById('courseSelect').value;
+      const date = document.getElementById('classDate').value;
+      const time = document.getElementById('classTime').value;
+      
+      if (!name || !email || !course || !date || !time) {
+        formMessage.textContent = 'Please fill in all fields.';
+        formMessage.style.color = '#ff6b6b';
+        formMessage.classList.add('show');
+        return;
+      }
+      
+      const courseNames = {
+        math: 'Mathematics Mastery',
+        physics: 'Physics Fundamentals',
+        chemistry: 'Chemistry Lab',
+        biology: 'Biology & Life Sciences',
+        english: 'English Literature',
+        coding: 'Coding & AI Basics',
+        sat: 'SAT Preparation'
+      };
+      
+      formMessage.textContent = `✅ Free trial booked! ${name}, your ${courseNames[course]} class is on ${date} at ${time}. Check ${email} for details.`;
+      formMessage.style.color = '#22d3ee';
+      formMessage.classList.add('show');
+      
+      setTimeout(() => {
+        bookingForm.reset();
+        formMessage.classList.remove('show');
+      }, 6000);
+    });
+
+    // ===== CLICK PLANETS FOR INFO =====
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    
+    renderer.domElement.addEventListener('click', (event) => {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      
+      raycaster.setFromCamera(mouse, camera);
+      
+      const allClickable = [];
+      planets.forEach(p => allClickable.push(p.userData.sphere));
+      
+      const intersects = raycaster.intersectObjects(allClickable);
+      
+      if (intersects.length > 0) {
+        const clickedSphere = intersects[0].object;
+        // Find which planet
+        planets.forEach(p => {
+          if (p.userData.sphere === clickedSphere) {
+            // Open courses panel and highlight
+            openPanel(coursesPanel);
+            // Could scroll to course, but for now just open
+          }
+        });
+      }
+    });
+
+    // Cursor pointer on hover over planets
+    renderer.domElement.addEventListener('pointermove', (event) => {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      
+      raycaster.setFromCamera(mouse, camera);
+      
+      const allClickable = [];
+      planets.forEach(p => allClickable.push(p.userData.sphere));
+      
+      const intersects = raycaster.intersectObjects(allClickable);
+      renderer.domElement.style.cursor = intersects.length > 0 ? 'pointer' : 'grab';
+    });
+
+    // ===== INIT =====
+    setTimeout(() => {
+      controls.autoRotate = true;
+    }, 1500);
+
+    // Hide hint after some time
+    setTimeout(() => {
+      const hint = document.getElementById('hint');
+      if (hint) hint.style.opacity = '0';
+    }, 12000);
+
+  </script>
+</body>
+</html>
